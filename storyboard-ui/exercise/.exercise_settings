@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="root">
+	<item key="pref.editor.editor.depth" value="2"/>
+	<item key="pref.editor_zoom" value="1.0"/>
+	<item key="sbio.is_remote" value="false"/>
+	<item key="sbio.local" value="ui_channel"/>
+	<item key="pref.default_screen_name" value="MainScreen"/>
+	<item key="pref.default_control_name" value="Control1"/>
+	<item key="pref.default_layer_name" value="background"/>
+	<section name="workingsets">
+		<item key="version" value="1"/>
+		<section name="">
+			<item key="includeDesignStates" value="true"/>
+			<list key="elements">
+				<item value="Screen"/>
+			</list>
+			<section name="Screen">
+			</section>
+		</section>
+	</section>
+</section>

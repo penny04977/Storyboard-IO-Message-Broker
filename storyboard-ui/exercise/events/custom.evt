@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<eventdefinitions>
+  <event name="temperature" type="0x40">
+    <description>Receiving updated temperature from the backend</description>
+  </event>
+</eventdefinitions>
