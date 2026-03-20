@@ -1,5 +1,6 @@
 Storyboard IO Message Broker
 1. Overview
+
 This project implements a simple publish–subscribe message broker using Crank Storyboard IO and a C++ backend (including a publisher and a subscriber) and a Storyboard UI application that acts as a client.
 There are four main components:
 * broker.cpp
@@ -54,6 +55,7 @@ There are four main components:
         * ui_channel (broker → UI; configured in the Storyboard greio plugin options).
 
 2. Setup Instructions
+
 2.1. Prerequisites
 * Crank Storyboard Designer and Engine installed (with Storyboard IO / greio support).
 * A C++ toolchain (e.g. g++) with:
@@ -77,40 +79,45 @@ This will:
 
 2.3. Configuring the Storyboard UI
 In your Storyboard project:
-1) IO Channels
+*  IO Channels
     * In the Storyboard Simulator Configurations → plugin options → greio:
         * Set the application’s receive channel to:
             * ui_channel
     * This is the channel on which the UI receives messages from the broker.
 
-2) Lua scripts for IO
+*  Lua scripts for IO
     * Ensure your Lua scripts use:
         * BROKER_CHANNEL = "broker_channel" for sending from UI → broker.
         * UI_CHANNEL = "ui_channel" for the UI’s own receive channel.
     * Typical publish call (from a button callback):local BROKER_CHANNEL = "broker_channel" 
 
-3) Event / IO Mapping
+*  Event / IO Mapping
     * Map incoming events on ui_channel to Lua callbacks in the IO configuration.
 
 2.4. Running the Demo
+
 A typical manual test flow uses multiple terminals.
 
-1) Start the broker
+I.  Start the broker
 In Terminal 1:
 ./broker  
 Expected on startup:
 * Opens BROKER_CHANNEL for reading.
 * Spawns the sending thread.
 * Waits for events.
-When a client registers, you should see:
-Registered: client1 
-When a client subscribes to an event, you should see:
-Subscribed: client1 - button
-Send event history to: client1 - button 
-When an event is published, you should see:
-Publish: button - press 
 
-2) Start a subscriber client
+When a client registers, you should see:
+> Registered: client1
+ 
+When a client subscribes to an event, you should see:
+> Subscribed: client1 - button
+
+> Send event history to: client1 - button
+ 
+When an event is published, you should see:
+> Publish: button - press 
+
+II.  Start a subscriber client
 In Terminal 2:
 ./subscriber  
 When prompted:
@@ -123,9 +130,9 @@ The client will:
 You can then use the subscriber’s command loop:
 Commands: subscribe <event>, unsubscribe <event>, quit  
 > subscribe temperature  
-Subscribed to temperature 
+> Subscribed to temperature 
 
-3) Start the publisher
+III.  Start the publisher
 In Terminal 3:
 ./publisher  
 Then, for example:
@@ -138,7 +145,7 @@ The publisher sends temperature with payload "28" to broker_channel. The broker:
 In the subscriber terminal you should see:
 [EVENT] temperature : 28
 
-4) Run the Storyboard UI
+IV.  Run the Storyboard UI
 In Storyboard Designer:
 * Launch the Storyboard Simulator using the configuration with:
     * ui_channel as the application’s greio channel.
@@ -147,7 +154,7 @@ In Storyboard Designer:
     * Press the button “Register” to trigger the “register” action.
     * Press the button “Publish” to trigger “publish temperature” from the UI.
     
-The broker will treat the UI just like any other client:
+	The broker will treat the UI just like any other client:
 * register and subscribe from the UI are handled by broker.cpp.
 * temperature publishes from the UI are broadcast to all subscribers (including C++ subscribers).
 
