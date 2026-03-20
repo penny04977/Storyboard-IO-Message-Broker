@@ -171,7 +171,7 @@ In Storyboard Designer:
 
 3. Notes / Limitations
 * One client channel per subscriber process
-    subscriber.cpp is intentionally simple: each process manages exactly one client channel. To simulate multiple clients, start multiple subscriber processes with different channel names.
+    subscriber.cpp is simple: each process manages exactly one client channel. To simulate multiple clients, start multiple subscriber processes with different channel names.
 
 * Message format compatibility:
 	To interoperate with both C++ clients and the Storyboard UI:
