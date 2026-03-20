@@ -5,9 +5,6 @@ This project implements a simple publish–subscribe message broker using Crank 
 There are four main components:
 * broker.cpp
     * A multithreaded C++ message broker using greio (greio.h) and pthread.
-    * Maintains:
-        * A subscriber table: std::unordered_map<client_channel, std::unordered_set<event_name>>.
-        * Per-event history: last 10 messages per event (event_history).
     * Supports the following protocol:
         * register: register a client channel.
         * subscribe: subscribe a client channel to an event.
@@ -17,6 +14,20 @@ There are four main components:
         * Stores the message in event_history (up to 10 per event).
         * Pushes a BrokerEvent into a queue.
         * A dedicated sending thread broadcasts the message to all subscribers using send_to_client.
+	* Maintains:
+        * A subscriber table: std::unordered_map<client_channel, std::unordered_set<event_name>>.
+        * Per-event history: last 10 messages per event (event_history).
+        * A message queue ‎`msg_queue` for published events that are pending broadcast.
+    * Is explicitly designed to be thread‑safe for concurrent client subscriptions and message publishing:
+        - Uses separate mutexes to protect each shared resource:
+            * ‎`sub_mutex` for the ‎`subscribers` table (register/subscribe/unsubscribe).
+            * ‎`hist_mutex` for ‎`event_history` (storing and replaying last messages).
+            * ‎`queue_mutex` for ‎`msg_queue` (producer/consumer handoff).
+            * ‎`log_mutex` for serialized file logging.
+        - Uses a condition variable ‎`queue_cond` to coordinate between:
+            * The main broker thread (producer) that pushes ‎`BrokerEvent` objects into ‎`msg_queue` on each publish.
+            * A dedicated sending thread (consumer) that waits on ‎`queue_cond`, pops messages from the queue, and calls 					‎`broadcast_message` to deliver them to all subscribers.
+        - All reads and writes to shared data structures go through these locks, preventing race conditions and ensuring data 				integrity when multiple clients are registering, subscribing, and publishing at the same time.
     * Logs activity to both stdout and broker.log (with timestamps).
 
 * subscriber.cpp
